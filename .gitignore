@@ -1,0 +1,52 @@
+# --- Sekrety — NIGDY nie commituj (to repo będzie publiczne, AGPL) ---
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Node / dependencies ---
+node_modules/
+.pnpm-store/
+
+# --- Next.js ---
+.next/
+out/
+build/
+next-env.d.ts
+
+# --- PWA (Serwist) — wygenerowane przy buildzie, nie commituj ---
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Testy ---
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# --- Docker — dane lokalnego Postgresa/MinIO, NIE schema/migracje Drizzle ---
+docker-data/
+postgres-data/
+minio-data/
+
+# --- Vercel ---
+.vercel/
+
+# --- Claude Code — commituj .claude/agents/ i .claude/commands/ (współdzielone), ignoruj tylko lokalne ---
+.claude/settings.local.json
+
+# --- IDE / OS ---
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logi ---
+npm-debug.log*
+pnpm-debug.log*
