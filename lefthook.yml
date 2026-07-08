@@ -1,0 +1,22 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: eslint
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
+      run: pnpm exec eslint {staged_files}
+
+    - name: prettier
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,json,css,md}"
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+
+    - name: secretlint
+      run: pnpm exec secretlint {staged_files}
+
+pre-push:
+  jobs:
+    - name: typecheck
+      run: pnpm typecheck
+
+    - name: test
+      run: pnpm test

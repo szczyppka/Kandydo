@@ -55,6 +55,7 @@ Nie instaluj żadnej paczki npm spoza listy wyżej i spoza sekcji "Stack" w `doc
 Domyślny tryb agentów LLM to dokładanie abstrakcji "na wszelki wypadek" — to jest dokładnie to, czego tu unikamy. Zasada: **najprostsza rzecz, która spełnia AKTUALNE wymaganie**, nie hipotetyczne przyszłe.
 
 Czerwone flagi — jeśli to piszesz, zatrzymaj się i uprość:
+
 - Interfejs/klasa abstrakcyjna z jedną implementacją "żeby łatwo dodać drugą". Dodaj drugą implementację, dopiero wtedy wydziel abstrakcję (Rule of Three — dopiero przy 3. powtórzeniu wzorca, nie przy 1.).
 - Parametr/opcja konfiguracyjna, której nic w kodzie jeszcze nie używa, "na przyszłość".
 - Warstwa (repository/service/controller) opakowująca jedną prostą funkcję Drizzle bez żadnej dodatkowej logiki.
@@ -67,6 +68,14 @@ Czerwone flagi — jeśli to piszesz, zatrzymaj się i uprość:
 Test przed napisaniem i przy review: **czy dałoby się wytłumaczyć tę funkcję/moduł koledze z zespołu w jednym przebiegu, bez otwierania 3 innych plików?** Jeśli nie — uprość, nie tłumacz komentarzem "dla elastyczności".
 
 To dotyczy też code-reviewera — ma to explicit sprawdzać, nie tylko bezpieczeństwo/koszt (patrz zaktualizowany `.claude/agents/code-reviewer.md`).
+
+## Git hooks: Lefthook (nie Husky)
+
+Zatwierdzona dodatkowa zależność dev — nie pytaj o nią ponownie. Zero kosztu LLM (czyste narzędzia CLI, nie agent), więc nie koliduje z zasadą ekonomii tokenów niżej — to inna warstwa.
+
+- **`pre-commit`**: tylko ESLint + Prettier na zmienionych plikach (szybkie, sekundy) + `secretlint` (skan pod przypadkowo wklejone klucze API).
+- **`pre-push`**: `pnpm typecheck` + `pnpm test` (wolniejsze, ale push jest rzadszy niż commit — może poczekać).
+- Konfiguracja w jednym `lefthook.yml` w rootcie, nie rozjeżdżaj tego na trzy pliki jak przy Husky+lint-staged.
 
 ## Ekonomia tokenów podczas developmentu — nie sprawdzaj ciągle całości
 
@@ -117,11 +126,11 @@ pnpm drizzle-kit push
 
 Zielony `code-reviewer` + `pnpm test` nie znaczy "bezpieczne do merge" — to konieczne, nie wystarczające. Zanim zaakceptujesz:
 
-1. **Otwórz diff, nie opis agenta.** Agent opisuje, co *zamierzał* zrobić — to może się różnić od tego, co faktycznie jest w plikach. Dla wszystkiego dotykającego auth/RLS/kredytów/szyfrowania/webhooków: przeczytaj diff linia po linii, nie ufaj samemu podsumowaniu.
+1. **Otwórz diff, nie opis agenta.** Agent opisuje, co _zamierzał_ zrobić — to może się różnić od tego, co faktycznie jest w plikach. Dla wszystkiego dotykającego auth/RLS/kredytów/szyfrowania/webhooków: przeczytaj diff linia po linii, nie ufaj samemu podsumowaniu.
 2. **Zweryfikuj, że nieznane API biblioteki faktycznie istnieje** — częsty typ halucynacji: prawdopodobnie brzmiąca, ale nieistniejąca metoda/parametr, szczególnie w Better Auth i Mastrze (nowsze biblioteki, 2026 — większa szansa, że trening modelu ma nieaktualną wersję API). Sprawdź w `node_modules/.../*.d.ts` albo oficjalnych docs, nie ufaj "wygląda dobrze".
 3. **Miejsca zero-tolerancji na pobieżne czytanie** (zawsze linia po linii, bez wyjątków):
    - Check-and-deduct kredytów (sekcja 21) — czy to naprawdę jedna atomowa transakcja, czy sprawdzenie jest PRZED wywołaniem Claude, czy istnieje jakaś ścieżka wywołania Anthropic z pominięciem tego checku.
-   - Każda nowa/zmieniona tabela — czy RLS *i* helper `.where(userId)` są realnie użyte w query, nie tylko obiecane w komentarzu.
+   - Każda nowa/zmieniona tabela — czy RLS _i_ helper `.where(userId)` są realnie użyte w query, nie tylko obiecane w komentarzu.
    - Budowa promptu do agentów — otwórz literalnie string promptu i sprawdź, że wklejona treść oferty pracy trafia jako dana (`user`/inny parametr), nie jest wklejona do stringa `system`.
    - Szyfrowanie klucza BYOK — czy insert do bazy faktycznie robi się na zaszyfrowanej wartości, nie na plaintext "do poprawienia później".
    - Webhook Stripe — czy jest weryfikacja podpisu (`stripe.webhooks.constructEvent`), nie sam `req.body` bez sprawdzenia, że request faktycznie przyszedł od Stripe.

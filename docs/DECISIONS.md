@@ -37,3 +37,5 @@ Krótki log "co i dlaczego", żeby świeża sesja agenta nie musiała odkrywać 
 - **Orkiestracja musi być widoczna na żywo w UI, nie schowana za jednym spinnerem.** Tabela `generation_runs` (JSON `steps`: nazwa/status/skrót wyniku/czas) aktualizowana po każdym kroku agenta, UI pokazuje live progres (TanStack Query polling, nie websockety — wystarczy przy generacji trwającej kilkanaście sekund). Ta sama tabela rozszerza `usage_log` z sekcji 21 architektury — jeden mechanizm, dwa zastosowania (bezpieczeństwo finansowe + demonstrowalność).
 
 - **Design system**: Geist Sans/Mono, jeden bazowy motyw shadcn + jeden kolor akcentu marki, dark mode od początku, skeleton/empty state/error boundary jako pierwszorzędne stany UI (nie dopisywane na końcu). Animacje: darmowe utility Tailwinda, biblioteka tylko jeśli wizualizacja pipeline'u tego jawnie wymaga.
+
+- **Vitest przypięty na `^3.x`, nie najnowszy `^4.x`**: `vitest@4.1.10` ciągnie rolldown-vite z natywnym bindingiem (`@rolldown/binding-darwin-arm64`), którego `pnpm` nie potrafi poprawnie zresolvować (potwierdzone dwoma czystymi reinstallami `node_modules`) — `pnpm test` padał na starcie.
