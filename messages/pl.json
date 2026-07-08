@@ -1,0 +1,10 @@
+{
+  "HomePage": {
+    "title": "Kandydo",
+    "description": "Dopasuj CV i list motywacyjny do oferty pracy."
+  },
+  "LanguageSwitcher": {
+    "pl": "Polski",
+    "en": "Angielski"
+  }
+}

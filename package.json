@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -12,12 +12,15 @@
     "postinstall": "lefthook install"
   },
   "dependencies": {
+    "@serwist/next": "^9.5.11",
     "better-auth": "^1.6.23",
     "drizzle-orm": "^0.45.2",
     "next": "15.5.20",
+    "next-intl": "^4.13.1",
     "postgres": "^3.4.9",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "serwist": "^9.5.11"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
